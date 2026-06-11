@@ -4,10 +4,13 @@ Slides and exercise materials for the alphalist Agentic Engineering DEV Bootcamp
 
 ## Quick start
 
+Needs [Bun](https://bun.sh) (`curl -fsSL https://bun.sh/install | bash`).
+
 ```bash
-npm install
-npm run dev -w templates/slidev   # see the Slidev template deck
-npm run dev -w templates/ts       # see the TS template deck
+bun install
+bun run --cwd modules/keynote dev     # work on the keynote
+bun run --cwd templates/slidev dev    # see the Slidev template deck
+bun run --cwd templates/ts dev        # see the TS template deck
 ```
 
 ## Repo map
@@ -23,8 +26,8 @@ npm run dev -w templates/ts       # see the TS template deck
 ## Add a deck to a module
 
 ```bash
-npm run new -- foundation slidev
-npm install
+bun run new foundation slidev
+bun install
 ```
 
 Each module picks its own format. Pick Slidev to write markdown fast. Pick TS when the deck needs bespoke visuals and an agent does most of the editing. Both read the shared style from `brand/`, so the decks look like one event.
@@ -33,7 +36,7 @@ Each module picks its own format. Pick Slidev to write markdown fast. Pick TS wh
 
 Present from the dev server, or hand out files per deck:
 
-- Slidev decks export to PDF with `npm run export -w modules/<slug>` (one-time setup: `npm i -D playwright-chromium`).
+- Slidev decks export to PDF with `bun run --cwd modules/<slug> export` (one-time setup: `bun add -d playwright-chromium && bun pm trust playwright-chromium`).
 - TS decks print to PDF from the browser: open the deck with `#/print` appended to the URL and print.
 
 A combined site or PDF bundle for participants comes later, after the content exists.

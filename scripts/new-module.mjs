@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Copy a deck template into a module folder: npm run new -- <slug> <slidev|ts> */
+/* Copy a deck template into a module folder: bun run new <slug> <slidev|ts> */
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -8,7 +8,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const [slug, format] = process.argv.slice(2)
 
 if (!slug || !['slidev', 'ts'].includes(format ?? '')) {
-  console.error('Usage: npm run new -- <module-slug> <slidev|ts>')
+  console.error('Usage: bun run new <module-slug> <slidev|ts>')
   process.exit(1)
 }
 
@@ -34,8 +34,8 @@ fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
 
 console.log(`Created ${format} deck in modules/${slug}`)
 console.log('Next steps:')
-console.log('  npm install')
-console.log(`  npm run dev -w modules/${slug}`)
+console.log('  bun install')
+console.log(`  bun run --cwd modules/${slug} dev`)
 console.log(
   format === 'slidev'
     ? `  edit the deck title in modules/${slug}/slides.md`

@@ -11,6 +11,6 @@ The talk demystifies the AI agent toolbox. The pod block puts it into practice: 
 
 ## Materials
 
-- Deck: talk slides plus the pod briefing (task sequence) in one deck. Start: `npm run new -- foundation slidev` (or `ts`).
+- Deck: talk slides plus the pod briefing (task sequence) in one deck. Start: `bun run new foundation slidev` (or `ts`).
 - `exercises/`: the pod tasks, one folder per exercise.
 - Content source: the trainer base units on skills, hooks, rules (`/Users/tereza/repos/hw/agentic-engineering-trainer-base/units/`).

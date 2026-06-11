@@ -30,7 +30,7 @@
   --code-muted: #64748b;
 
   /* semantic */
-  --bg: var(--al-offwhite);
+  --bg: #ffffff;
   --fg: var(--hw-ink);
   --muted: var(--al-gray-dark);
   --faint: var(--al-gray);

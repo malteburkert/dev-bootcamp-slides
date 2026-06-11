@@ -1,10 +1,16 @@
-import type { ReactNode } from 'react'
-import { Bullets, Code, Cols, Cover, Exercise, Section, Slide } from './kit'
+import { Accent, Bullets, Code, Cols, Cover, Exercise, NumberedList, Section, Slide, Statement, type SlideDef } from './kit'
 
 /*
  * The deck. One array entry per slide. Edit here, the runtime does the rest.
+ *
+ * Step reveals: wrap an entry as { node: <... stepped />, steps: N } and the arrow keys
+ * reveal N times before moving on (dimmed items light up, like the example below).
+ *
+ * The kit has more components than this demo shows; see kit.tsx for all of them:
+ * Cover, Section, Statement (+Accent), BigDate, Bullets, NumberedList, Cols, Code,
+ * Exercise, StageCards, LoopCompare, CardGrid, Layers, BigStats, Agenda, Hosts, Outputs, Step.
  */
-export const slides: ReactNode[] = [
+export const slides: SlideDef[] = [
   <Cover
     title="Deck template"
     subtitle="Subtitle or claim in one line"
@@ -17,6 +23,10 @@ export const slides: ReactNode[] = [
   />,
 
   <Section kicker="Part 1" title="A section divider" subtitle="One line on what this part delivers" />,
+
+  <Statement eyebrow="A full-screen claim" sub="One supporting line underneath.">
+    One big sentence with an <Accent>accent</Accent>.
+  </Statement>,
 
   <Code
     title="A code slide"
@@ -36,6 +46,22 @@ const factory = buildFactory({ skills, hooks, rules })
       </ul>
     }
   />,
+
+  {
+    node: (
+      <NumberedList
+        eyebrow="Numbered list, revealed step by step"
+        title="Steps with hints."
+        stepped
+        items={[
+          { text: 'First step.', hint: 'An optional hint line below it.' },
+          { text: 'Second step.', hint: 'Dimmed until you press the arrow key.' },
+          { text: 'Third step.' },
+        ]}
+      />
+    ),
+    steps: 2,
+  },
 
   <Exercise title="Try it yourself" duration="20 min">
     <ol>

@@ -11,6 +11,6 @@ Short talk introducing the pipeline needed as a foundation for the AI Factory, t
 
 ## Materials
 
-- Deck: talk slides plus the pod briefing in one deck. Start: `npm run new -- pipeline slidev` (or `ts`).
+- Deck: talk slides plus the pod briefing in one deck. Start: `bun run new pipeline slidev` (or `ts`).
 - `exercises/`: the pod tasks, one folder per exercise.
 - Content source: the pipeline/process ingredients in `/Users/tereza/repos/hw/software-factory-slides` (plan well, small increments, fast feedback, determinism, hooks).

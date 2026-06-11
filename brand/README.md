@@ -24,8 +24,10 @@ Loaded from Google Fonts via [fonts.css](fonts.css). TS decks add the same `<lin
 |------|-----|
 | `logos/hw-logo.svg` | Watermark, bottom right of every slide. Both templates ship it; leave it in place. |
 | `logos/hw-type-logo-long.png` | Wordmark for cover slides and handouts. |
+| `logos/alphalist-wave.png` | alphalist wave mark, cropped into the bottom-left corner of every slide (see the keynote frame). |
+| `logos/alphalist-logo.png` | alphalist wordmark for the top-left co-brand header ("alphalist / Developer Bootcamp"). Render with `mix-blend-mode: multiply` so its white background disappears on the warm off-white. |
 
-There is no alphalist logo file in this repo. Name the event in text ("alphalist Developer Bootcamp, Hamburg") instead of placing their logo.
+Co-brand chrome on a slide: alphalist wordmark + "/ Developer Bootcamp" top left, "Hamburg / 2026" + alphalist wave bottom left, page count + h&w logo bottom right. The TS template and the keynote ship it out of the box (`src/App.tsx`); the Slidev theme does not carry it yet.
 
 ## How decks consume this
 

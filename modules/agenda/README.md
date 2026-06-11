@@ -13,6 +13,6 @@ Purely facilitated sessions stay slide-free; this module only carries what genui
 
 ## Materials
 
-- Deck: start with `npm run new -- agenda slidev`.
+- Deck: start with `bun run new agenda slidev`.
 - `exercises/`: reflection worksheet and the 90-day rollout template (the event page promises participants take it home).
 - `guest-decks/`: final PDFs from the customer-report guests, so participants get them with the rest.

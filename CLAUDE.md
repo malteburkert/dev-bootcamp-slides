@@ -26,24 +26,26 @@ Purely facilitated sessions get no deck.
 
 Every module chooses one of two deck formats. The choice belongs to whoever builds the module.
 
-- **Slidev**: markdown deck, theme `hw-bootcamp` from `brand/slidev-theme/`. Fast to write by hand. Start: `npm run new -- <slug> slidev`.
-- **TS (Vite + React)**: components in `src/slides.tsx` using the kit in `src/kit.tsx`. For bespoke visuals; assume agents do the editing. Start: `npm run new -- <slug> ts`.
+- **Slidev**: markdown deck, theme `hw-bootcamp` from `brand/slidev-theme/`. Fast to write by hand. Start: `bun run new <slug> slidev`.
+- **TS (Vite + React)**: components in `src/slides.tsx` using the kit in `src/kit.tsx`. For bespoke visuals; assume agents do the editing. Start: `bun run new <slug> ts`.
 
 Both must keep the same look. The contract: import colors, fonts, spacing from `brand/tokens.css`; keep the h&w logo watermark every deck ships with; never hardcode hex values in slides.
 
 ## Commands
 
+The repo runs on Bun (workspaces, `bun.lock`). Do not introduce `package-lock.json`.
+
 | Command | Effect |
 |---------|--------|
-| `npm run new -- <slug> <slidev\|ts>` | Copy a template into `modules/<slug>` |
-| `npm run dev -w modules/<slug>` | Dev server for one deck (also works for `templates/slidev` and `templates/ts`) |
-| `npm run export -w modules/<slug>` | PDF of a Slidev deck (one-time setup: `npm i -D playwright-chromium`) |
+| `bun run new <slug> <slidev\|ts>` | Copy a template into `modules/<slug>` |
+| `bun run --cwd modules/<slug> dev` | Dev server for one deck (also works for `templates/slidev` and `templates/ts`) |
+| `bun run --cwd modules/<slug> export` | PDF of a Slidev deck (one-time setup: `bun add -d playwright-chromium && bun pm trust playwright-chromium`) |
 
 TS decks print to PDF from the browser via the `#/print` route. There is no combined site or PDF pipeline yet; that comes after the content exists.
 
 ## Style rules
 
-- Colors and fonts come from `brand/tokens.css`. Headings: Space Grotesk. Body: Inter. Code and labels: JetBrains Mono. Background is the warm off-white `--bg`, not pure white.
+- Colors and fonts come from `brand/tokens.css`. Headings: Space Grotesk. Body: Inter. Code and labels: JetBrains Mono. Background is white (`--bg`), matching the CTO-bootcamp deck; the warm off-white stays available as `--al-offwhite` for panels.
 - Token sources: h&w teal/ink from the trainer base and factory deck, warm grays and off-white from the alphalist site, purple/amber accents from the factory deck. Details in `brand/README.md`.
 - Slide headings use sentence case ("Build your factory's foundation", not "Build Your Factory's Foundation").
 - Participant-facing copy is plain ASCII punctuation: no em-dashes, no arrows, no bullet dots, no decorative emoji. Write short sentences, concrete claims, active voice. Banned filler: "leverage", "best practices", "transform", "methodology", "approach", bare multipliers like "10x" without a named metric.

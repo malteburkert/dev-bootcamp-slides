@@ -8,7 +8,7 @@ Status values: `todo`, `in progress`, `review`, `done`.
 
 | Module | Agenda sessions covered | Job | Owner | Status |
 |--------|------------------------|-----|-------|--------|
-| `keynote` | Opening Keynote: From AI Experiments to the AI Factory (Day 1, 09:30) + Pod Kickoff: introduction rounds & the AI developer reality check (Day 1, 10:00) | Keynote deck, closing with the pod kickoff instructions | Tereza + Stefan | todo |
+| `keynote` | Opening Keynote: From AI Experiments to the AI Factory (Day 1, 09:30) + Pod Kickoff: introduction rounds & the AI developer reality check (Day 1, 10:00) | Keynote deck, closing with the pod kickoff instructions | Tereza + Stefan | in progress (17-slide draft built; open: turning-point date, trainer bios, logistics) |
 | `foundation` | Intro to the Foundation - skills, hooks and rules (Day 1, 11:00) + Pod Block 1 - Foundations: build your factory's foundation (Day 1, 11:30) | Talk deck + pod exercises | Talk: Stefan? Exercises: TBD | todo |
 | `pipeline` | Intro to the Pipeline — RPI, planning, sub-agents, fast feedback, determinism (Day 1, 14:00) + Pod block 2 — Pipeline: wire your factory's pipeline (Day 1, 14:30) | Talk deck + pod exercises | Talk: Malte? Exercises: TBD | todo |
 | `factory-retro` | Retrospective for your AI Factory (Day 2, 09:00) + Pod block 3 - Evals & optimization (Day 2, 10:00) | Talk deck + eval exercises | Tereza | todo |

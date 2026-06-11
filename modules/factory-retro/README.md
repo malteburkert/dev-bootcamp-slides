@@ -13,6 +13,6 @@ Note: the 09:30-10:00 slot between the two sessions is planned as a warm up. Che
 
 ## Materials
 
-- Deck: none yet, talk slides plus the pod briefing in one deck. Start it: `npm run new -- factory-retro slidev` (or `ts`).
+- Deck: none yet, talk slides plus the pod briefing in one deck. Start it: `bun run new factory-retro slidev` (or `ts`).
 - `exercises/`: the eval workshop tasks, one folder per exercise.
 - Content sources: the evals/learning-loop ingredients in `/Users/tereza/repos/hw/software-factory-slides` ("trust, but verify", "data, not vibes", "build a learning system", "treat your pipeline as a product").
