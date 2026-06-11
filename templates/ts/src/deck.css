@@ -1,0 +1,224 @@
+/* Deck runtime + slide kit styles. Colors and fonts come from brand/tokens.css. */
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--hw-ink);
+}
+
+/* screen mode: one slide, scaled to fit */
+.viewport {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stage {
+  width: 1280px;
+  height: 720px;
+  flex: none;
+}
+
+/* the 16:9 canvas */
+.frame {
+  position: relative;
+  width: 1280px;
+  height: 720px;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 21px;
+  line-height: 1.55;
+}
+
+.counter {
+  position: absolute;
+  bottom: 18px;
+  left: 26px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--faint);
+}
+
+.wm {
+  position: absolute;
+  bottom: 16px;
+  right: 20px;
+  height: 34px;
+  pointer-events: none;
+}
+
+/* slide base */
+.slide {
+  position: absolute;
+  inset: 0;
+  padding: 56px 64px;
+  display: flex;
+  flex-direction: column;
+}
+
+.slide-center {
+  justify-content: center;
+}
+
+.frame h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  font-size: 46px;
+  margin: 0 0 22px;
+}
+
+.frame h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30px;
+  margin: 0 0 14px;
+}
+
+.frame p {
+  margin: 0 0 14px;
+}
+
+.frame a {
+  color: var(--primary);
+}
+
+.frame ul,
+.frame ol {
+  margin: 0;
+  padding-left: 1.3em;
+}
+
+.frame li {
+  margin-bottom: 10px;
+}
+
+.frame li::marker {
+  color: var(--primary);
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 26px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 17px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--primary);
+  margin-bottom: 28px;
+}
+
+.eyebrow-purple {
+  color: var(--secondary);
+}
+
+/* cover */
+.cover .cover-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 9px;
+  background: linear-gradient(180deg, var(--primary), var(--secondary));
+}
+
+.cover h1 {
+  font-size: 62px;
+  max-width: 86%;
+}
+
+.presenters {
+  font-family: var(--font-mono);
+  font-size: 19px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+
+/* section */
+.section h1 {
+  font-size: 56px;
+  max-width: 85%;
+}
+
+.section-bar {
+  width: 110px;
+  height: 7px;
+  border-radius: 4px;
+  margin-top: 26px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+/* columns */
+.cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+/* code */
+.code-panel {
+  background: var(--code-bg);
+  color: var(--code-text);
+  font-family: var(--font-mono);
+  font-size: 18px;
+  line-height: 1.6;
+  padding: 24px 28px;
+  border-radius: var(--radius);
+  overflow: auto;
+  margin: 0;
+}
+
+/* chips (exercise) */
+.exercise-header {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.chip {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 4px 14px;
+  border-radius: var(--radius-sm);
+}
+
+.chip-teal {
+  background: var(--hw-teal-tint);
+  color: var(--primary-deep);
+}
+
+.chip-amber {
+  background: var(--accent-amber-tint);
+  color: var(--fg);
+}
+
+/* print mode: all slides stacked, one per page */
+@page {
+  size: 1280px 720px;
+  margin: 0;
+}
+
+.print {
+  background: none;
+}
+
+.print .frame {
+  page-break-after: always;
+  break-after: page;
+}

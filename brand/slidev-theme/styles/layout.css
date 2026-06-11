@@ -1,0 +1,141 @@
+@import '../../fonts.css';
+@import '../../tokens.css';
+
+/* base box: the theme replaces theme-default, so it must size the slide itself */
+.slidev-layout {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  padding: 3rem 3.5rem;
+}
+
+/* restore what the UnoCSS preflight resets */
+.slidev-layout p {
+  margin: 0.6em 0;
+}
+
+.slidev-layout ul {
+  list-style: disc;
+  padding-left: 1.5em;
+  margin: 0.6em 0;
+}
+
+.slidev-layout ol {
+  list-style: decimal;
+  padding-left: 1.5em;
+  margin: 0.6em 0;
+}
+
+.slidev-layout li {
+  margin: 0.4em 0;
+}
+
+.slidev-layout pre {
+  padding: 1em 1.2em;
+  overflow: auto;
+}
+
+.slidev-layout table {
+  border-collapse: collapse;
+}
+
+.slidev-layout th,
+.slidev-layout td {
+  padding: 0.4em 0.9em;
+  text-align: left;
+}
+
+.slidev-layout h1,
+.slidev-layout h2,
+.slidev-layout h3 {
+  font-family: var(--font-display);
+  color: var(--hw-ink);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.slidev-layout h1 {
+  font-size: 2.3rem;
+  margin-bottom: 1.1rem;
+}
+
+.slidev-layout h1 + p {
+  margin-top: -0.7rem;
+  color: var(--muted);
+  font-size: 1.15rem;
+}
+
+.slidev-layout h2 {
+  font-size: 1.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.slidev-layout a {
+  color: var(--primary);
+  border-bottom: 1px solid var(--hw-teal-tint);
+  text-decoration: none;
+}
+
+.slidev-layout :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--hw-teal-tint);
+  color: var(--primary-deep);
+  padding: 0.1em 0.4em;
+  border-radius: var(--radius-sm);
+}
+
+.slidev-layout pre {
+  border-radius: var(--radius);
+}
+
+.slidev-layout blockquote {
+  border-left: 3px solid var(--primary);
+  background: var(--surface);
+  color: var(--muted);
+  padding: 0.6em 1em;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.slidev-layout ul li::marker,
+.slidev-layout ol li::marker {
+  color: var(--primary);
+}
+
+.slidev-layout table th {
+  font-family: var(--font-mono);
+  font-size: 0.78em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border-bottom: 2px solid var(--line);
+}
+
+.slidev-layout table td {
+  border-bottom: 1px solid var(--line);
+}
+
+/* helpers usable inside any markdown slide */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--primary);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.highlight {
+  background: var(--accent-amber-tint);
+  padding: 0.05em 0.3em;
+  border-radius: var(--radius-sm);
+}

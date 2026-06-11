@@ -1,0 +1,52 @@
+/*
+ * Design tokens for the alphalist DEV Bootcamp Hamburg decks.
+ * Single source of truth for every deck format. See brand/README.md for sources.
+ */
+:root {
+  /* palette: h&w */
+  --hw-teal: #1a7285;
+  --hw-teal-deep: #135866;
+  --hw-ink: #1d2739;
+  --hw-teal-tint: #e8f4f6;
+
+  /* palette: alphalist site */
+  --al-offwhite: #f7f7f5;
+  --al-gray: #9a9a94;
+  --al-gray-dark: #5a5a56;
+
+  /* palette: factory-deck accents */
+  --accent-purple: #9333ea;
+  --accent-purple-tint: #f3eaff;
+  --accent-amber: #f59e0b;
+  --accent-amber-tint: #fef3c7;
+  --ok-green: #16a34a;
+  --warn-red: #dc2626;
+
+  /* code blocks (dark panel on light slides) */
+  --code-bg: #1e293b;
+  --code-text: #cbd5e1;
+  --code-green: #4ade80;
+  --code-cyan: #7dd3fc;
+  --code-muted: #64748b;
+
+  /* semantic */
+  --bg: var(--al-offwhite);
+  --fg: var(--hw-ink);
+  --muted: var(--al-gray-dark);
+  --faint: var(--al-gray);
+  --primary: var(--hw-teal);
+  --primary-deep: var(--hw-teal-deep);
+  --secondary: var(--accent-purple);
+  --highlight: var(--accent-amber);
+  --surface: #ffffff;
+  --line: #e4e4e0;
+
+  /* type */
+  --font-display: 'Space Grotesk', 'Inter', sans-serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* shape */
+  --radius: 10px;
+  --radius-sm: 6px;
+}

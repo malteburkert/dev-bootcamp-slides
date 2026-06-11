@@ -1,0 +1,16 @@
+{
+  "name": "dev-bootcamp-slides",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "brand/slidev-theme",
+    "templates/*",
+    "modules/*"
+  ],
+  "scripts": {
+    "new": "node scripts/new-module.mjs"
+  }
+}

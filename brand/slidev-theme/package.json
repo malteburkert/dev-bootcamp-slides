@@ -1,0 +1,14 @@
+{
+  "name": "slidev-theme-hw-bootcamp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared Slidev theme for the alphalist DEV Bootcamp Hamburg decks",
+  "keywords": [
+    "slidev-theme",
+    "slidev"
+  ],
+  "engines": {
+    "node": ">=22",
+    "slidev": ">=52.0.0"
+  }
+}
