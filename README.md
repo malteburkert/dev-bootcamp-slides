@@ -34,8 +34,9 @@ Each module picks its own format. Pick Slidev to write markdown fast. Pick TS wh
 
 ## Share a deck
 
-Present from the dev server, or hand out files per deck:
+Present from the dev server, share the live link, or hand out files per deck:
 
+- TS decks are live on GitHub Pages, each at its own subpath, redeployed on every push to `main`. The keynote: **https://hackersandwizards.github.io/dev-bootcamp-slides/keynote/** (append `#/print` to see every slide at once). The [site root](https://hackersandwizards.github.io/dev-bootcamp-slides/) lists all deployed decks.
 - Slidev decks export to PDF with `bun run --cwd modules/<slug> export` (one-time setup: `bun add -d playwright-chromium && bun pm trust playwright-chromium`).
 - TS decks print to PDF from the browser: open the deck with `#/print` appended to the URL and print.
 

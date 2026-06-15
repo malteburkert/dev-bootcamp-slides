@@ -1,0 +1,67 @@
+name: Deploy decks to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'modules/**'
+      - 'brand/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+# Allow the workflow to publish to Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; newer pushes supersede in-flight runs.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - name: Build each TS deck to its own subpath
+        run: |
+          set -e
+          mkdir -p _site
+          decks=()
+          for dir in modules/*/; do
+            m=$(basename "$dir")
+            # only Vite/TS decks (Slidev decks have no vite.config.ts)
+            [ -f "$dir/vite.config.ts" ] || continue
+            echo "::group::build $m"
+            bun run --cwd "modules/$m" build -- --base "/dev-bootcamp-slides/$m/"
+            mkdir -p "_site/$m"
+            cp -r "modules/$m/dist/." "_site/$m/"
+            decks+=("$m")
+            echo "::endgroup::"
+          done
+          # root landing page linking each deployed deck
+          {
+            echo '<!doctype html><html lang="en"><meta charset="utf-8">'
+            echo '<title>Developer Bootcamp Hamburg</title>'
+            echo '<style>body{font-family:system-ui,sans-serif;max-width:640px;margin:80px auto;padding:0 24px;color:#0f172a}h1{font-weight:800}a{display:block;margin:14px 0;font-size:20px;color:#0f766e}</style>'
+            echo '<h1>Developer Bootcamp Hamburg</h1><p>Slide decks:</p>'
+            for m in "${decks[@]}"; do echo "<a href=\"./$m/\">$m</a>"; done
+          } > _site/index.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
