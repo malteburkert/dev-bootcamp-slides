@@ -79,28 +79,41 @@ export function Statement({
   )
 }
 
-/* a problem statement that resolves into its solution on a click */
+/* the pivot from a problem to its answer, as two outlined boxes side by side;
+ * the answer box reveals on a click. */
 export function Pivot({
   eyebrow,
   lead,
+  problemLabel = 'The catch',
   body,
+  solutionLabel = 'The answer',
   solution,
   stepped = true,
 }: {
   eyebrow?: string
   lead: ReactNode
-  body?: ReactNode
+  problemLabel?: string
+  body: ReactNode
+  solutionLabel?: string
   solution: ReactNode
   stepped?: boolean
 }) {
   const step = useStep()
   return (
-    <div className="slide slide-center statement">
+    <Slide>
       {eyebrow && <div className="eyebrow">{eyebrow}</div>}
-      <h1 className="statement-h">{lead}</h1>
-      {body && <p className="subtitle pivot-body">{body}</p>}
-      <p className={`pivot-solution step${stepped && step < 1 ? ' step-dim' : ''}`}>{solution}</p>
-    </div>
+      <h1>{lead}</h1>
+      <div className="pivot-cols">
+        <div className="pivot-box pivot-box-problem">
+          <div className="pivot-box-label">{problemLabel}</div>
+          <p className="pivot-box-text">{body}</p>
+        </div>
+        <div className={`pivot-box pivot-box-answer step${stepped && step < 1 ? ' step-dim' : ''}`}>
+          <div className="pivot-box-label">{solutionLabel}</div>
+          <p className="pivot-box-text">{solution}</p>
+        </div>
+      </div>
+    </Slide>
   )
 }
 
@@ -124,21 +137,33 @@ export function Quote({
   quote,
   attribution,
   punchline,
+  cover,
   stepped = false,
 }: {
   eyebrow?: string
   quote: ReactNode
   attribution: string
   punchline?: ReactNode
+  cover?: ReactNode
   stepped?: boolean
 }) {
   const step = useStep()
+  const covered = cover && (!stepped || step >= 2)
   return (
     <div className="slide slide-center">
-      {eyebrow && <div className="eyebrow">{eyebrow}</div>}
-      <blockquote className="quote-q">{quote}</blockquote>
-      <div className="quote-a">{attribution}</div>
-      {punchline && <p className={`quote-p step${stepped && step < 1 ? ' step-dim' : ''}`}>{punchline}</p>}
+      <div className={`quote-body${covered ? ' quote-faded' : ''}`}>
+        {eyebrow && <div className="eyebrow">{eyebrow}</div>}
+        <blockquote className="quote-q">{quote}</blockquote>
+        <div className="quote-a">{attribution}</div>
+        {punchline && <p className={`quote-p step${stepped && step < 1 ? ' step-dim' : ''}`}>{punchline}</p>}
+      </div>
+      {cover && (
+        <div className={`banner-cover${covered ? ' banner-cover-in' : ''}`}>
+          <div className="banner-sign">
+            <span className="banner-text">{cover}</span>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -182,14 +207,19 @@ export function Pace({
   note?: ReactNode
   footer?: ReactNode
 }) {
+  /* End the axis just past the last release. A partial year (2026, only a few
+   * months in) then gets well under half a full year's width, so the recent
+   * cluster reads as rising release density instead of dead space. */
+  const lastM = Math.max(...dots.map((d) => d.m))
+  const axisEnd = paceX(lastM) + 10
   return (
     <Slide>
       {eyebrow && <div className="eyebrow">{eyebrow}</div>}
       <h1>{title}</h1>
       <div>
-        <svg viewBox="0 0 1088 280" className="pace-svg" aria-hidden="true">
-          <line x1={16} y1={220} x2={1046} y2={220} className="pace-axis" />
-          <path d="M 1046 214 L 1058 220 L 1046 226 z" className="pace-axis-head" />
+        <svg viewBox={`0 0 ${axisEnd + 24} 280`} className="pace-svg" aria-hidden="true">
+          <line x1={16} y1={220} x2={axisEnd} y2={220} className="pace-axis" />
+          <path d={`M ${axisEnd} 214 L ${axisEnd + 12} 220 L ${axisEnd} 226 z`} className="pace-axis-head" />
           {years.map((y) => (
             <g key={y.label}>
               <line x1={paceX(y.m)} y1={214} x2={paceX(y.m)} y2={226} className="pace-axis" />
@@ -314,7 +344,13 @@ export function Exercise({
   )
 }
 
-export type Stage = { num: string; title: string; badge?: string; tone?: 'teal' | 'purple' | 'amber' }
+export type Stage = {
+  num: string
+  title: string
+  badge?: string
+  tone?: 'teal' | 'purple' | 'amber'
+  callout?: string
+}
 
 export function StageCards({
   eyebrow,
@@ -332,6 +368,7 @@ export function StageCards({
   stepped?: boolean
 }) {
   const step = useStep()
+  const id = useId()
   return (
     <Slide>
       {eyebrow && <div className="eyebrow">{eyebrow}</div>}
@@ -339,6 +376,34 @@ export function StageCards({
       <div className="stages">
         {stages.map((s, i) => (
           <div key={s.num} className={`stage-card step${stepped && i > step ? ' step-dim' : ''}`}>
+            {s.callout && (
+              <div className={`stage-callout step${stepped && step < stages.length ? ' step-dim' : ''}`}>
+                <div className="stage-callout-bubble">{s.callout}</div>
+                <svg className="stage-callout-arrow" viewBox="0 0 60 48" aria-hidden="true">
+                  <defs>
+                    <marker
+                      id={`${id}-c`}
+                      viewBox="0 0 10 10"
+                      refX="6"
+                      refY="5"
+                      markerWidth="6.5"
+                      markerHeight="6.5"
+                      orient="auto-start-reverse"
+                    >
+                      <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
+                    </marker>
+                  </defs>
+                  <path
+                    d="M 50 6 Q 6 14 22 42"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    markerEnd={`url(#${id}-c)`}
+                  />
+                </svg>
+              </div>
+            )}
             <span className="stage-num">{s.num}</span>
             <span className="stage-title">{s.title}</span>
             {s.badge && <span className={`chip chip-${s.tone ?? 'teal'}`}>{s.badge}</span>}
@@ -456,7 +521,7 @@ export function BigLoop({
   eyebrow?: string
   title: ReactNode
   stops: { label: string; dur?: string }[]
-  badge: string
+  badge?: string
   badgeTone?: 'amber' | 'teal'
   prompt: string
   footer?: ReactNode
@@ -502,11 +567,311 @@ export function BigLoop({
             {s.dur && <span className="chip chip-plain">{s.dur}</span>}
           </span>
         ))}
-        <span className={`chip chip-${badgeTone} bigloop-badge`}>{badge}</span>
+        {badge && <span className={`chip chip-${badgeTone} bigloop-badge`}>{badge}</span>}
       </div>
       <div className="prompt-bar bigloop-prompt">{prompt}</div>
       {footer && <p className={`bigloop-footer step${stepped && step < 1 ? ' step-dim' : ''}`}>{footer}</p>}
     </Slide>
+  )
+}
+
+/* a linear pipeline: stage cards left to right with forward arrows. A loop accent
+ * on a stage (and the footer) reveal on a click, framing the loops as our addition
+ * to the linear process. The deliberate contrast to the vibe loop (a circle that
+ * spins) is a line that advances. */
+export function Pipeline({
+  eyebrow,
+  title,
+  stages,
+  prompt,
+  footer,
+  stepped = false,
+}: {
+  eyebrow?: string
+  title: ReactNode
+  stages: { num: string; label: string; dur: string; highlight?: boolean; loop?: boolean }[]
+  prompt?: string
+  footer?: ReactNode
+  stepped?: boolean
+}) {
+  const step = useStep()
+  const id = useId()
+  const dim = stepped && step < 1
+  return (
+    <Slide>
+      {eyebrow && <div className="eyebrow">{eyebrow}</div>}
+      <h1>{title}</h1>
+      <div className="pipeline-row">
+        {stages.map((s, i) => [
+          i > 0 ? (
+            <svg key={`arrow-${i}`} className="pipeline-arrow" viewBox="0 0 16 24" aria-hidden="true">
+              <path
+                d="M 4 5 L 12 12 L 4 19"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          ) : null,
+          <div key={s.num} className={`pipeline-card${s.highlight ? ' pipeline-card-hl' : ''}`}>
+            {s.loop && (
+              <svg className={`pipeline-loop${dim ? ' step-dim' : ''}`} viewBox="0 0 40 40" aria-hidden="true">
+                <defs>
+                  <marker
+                    id={`${id}-l`}
+                    viewBox="0 0 10 10"
+                    refX="6"
+                    refY="5"
+                    markerWidth="5.5"
+                    markerHeight="5.5"
+                    orient="auto-start-reverse"
+                  >
+                    <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
+                  </marker>
+                </defs>
+                <path
+                  d="M 28 11 A 12 12 0 1 1 13 10"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                  markerEnd={`url(#${id}-l)`}
+                />
+              </svg>
+            )}
+            <span className="pipeline-num">{s.num}</span>
+            <span className="pipeline-label">{s.label}</span>
+            <span className="chip chip-plain pipeline-dur">{s.dur}</span>
+          </div>,
+        ])}
+      </div>
+      {prompt && <div className="prompt-bar pipeline-prompt">{prompt}</div>}
+      {footer && <p className={`pipeline-footer step${dim ? ' step-dim' : ''}`}>{footer}</p>}
+    </Slide>
+  )
+}
+
+/* a flexible grid of outlined boxes; each box can carry a colored outline (tone),
+ * an optional mono label, a heading and body text. Used wherever a list reads
+ * better as boxes than as bullets or bars. */
+export type Box = {
+  label?: string
+  title?: ReactNode
+  text?: ReactNode
+  tone?: 'plain' | 'teal' | 'amber' | 'purple' | 'green'
+  span?: boolean
+}
+
+export function Boxes({
+  eyebrow,
+  title,
+  boxes,
+  cols = 3,
+  footer,
+  stepped = false,
+}: {
+  eyebrow?: string
+  title?: ReactNode
+  boxes: Box[]
+  cols?: number
+  footer?: ReactNode
+  stepped?: boolean
+}) {
+  const step = useStep()
+  return (
+    <Slide>
+      {eyebrow && <div className="eyebrow">{eyebrow}</div>}
+      {title && <h1>{title}</h1>}
+      <div className="boxes" style={{ '--cols': cols } as CSSProperties}>
+        {boxes.map((b, i) => (
+          <div
+            key={i}
+            className={`box box-${b.tone ?? 'plain'}${b.span ? ' box-span' : ''} step${stepped && i > step ? ' step-dim' : ''}`}
+          >
+            {b.label && <div className="box-label">{b.label}</div>}
+            {b.title && <div className="box-title">{b.title}</div>}
+            {b.text && <div className="box-text">{b.text}</div>}
+          </div>
+        ))}
+      </div>
+      {footer && (
+        <p className={`boxes-footer step${stepped && step < boxes.length ? ' step-dim' : ''}`}>{footer}</p>
+      )}
+    </Slide>
+  )
+}
+
+/* simple stroke icons for the house-rules slide */
+const ruleIcons: Record<string, ReactNode> = {
+  'video-off': (
+    <>
+      <path d="M10.66 6H14a2 2 0 0 1 2 2v2.34l1 1L22 8v8" />
+      <path d="M16 16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2l10 10Z" />
+      <line x1="2" y1="2" x2="22" y2="22" />
+    </>
+  ),
+  'mic-off': (
+    <>
+      <rect x="9" y="3" width="6" height="11" rx="3" />
+      <path d="M5 11a7 7 0 0 0 14 0" />
+      <line x1="12" y1="18" x2="12" y2="22" />
+      <line x1="2" y1="2" x2="22" y2="22" />
+    </>
+  ),
+  lock: (
+    <>
+      <rect x="3" y="11" width="18" height="11" rx="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </>
+  ),
+  pencil: (
+    <>
+      <path d="M17 3a2.85 2.85 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+      <path d="m15 5 4 4" />
+    </>
+  ),
+}
+
+function RuleIcon({ name }: { name: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {ruleIcons[name]}
+    </svg>
+  )
+}
+
+/* house-rules slide: icon boxes plus a tinted "write about it" banner */
+export function HouseRules({
+  eyebrow,
+  title,
+  rules,
+  banner,
+}: {
+  eyebrow?: string
+  title: ReactNode
+  rules: { icon: string; text: string }[]
+  banner?: { icon?: string; label: string; text: ReactNode }
+}) {
+  return (
+    <Slide>
+      {eyebrow && <div className="eyebrow eyebrow-green">{eyebrow}</div>}
+      <h1>{title}</h1>
+      <div className="houserules">
+        {rules.map((r, i) => (
+          <div key={r.text} className="houserule">
+            <span className="houserule-icon">
+              <RuleIcon name={r.icon} />
+            </span>
+            <span className="houserule-num">{String(i + 1).padStart(2, '0')}</span>
+            <span className="houserule-text">{r.text}</span>
+          </div>
+        ))}
+      </div>
+      {banner && (
+        <div className="houserules-banner">
+          <span className="houserules-banner-icon">
+            <RuleIcon name={banner.icon ?? 'pencil'} />
+          </span>
+          <p className="houserules-banner-text">
+            <strong>{banner.label}</strong> {banner.text}
+          </p>
+        </div>
+      )}
+    </Slide>
+  )
+}
+
+/* a horizontal bar chart; bars grow on slide enter (screen only). Bar length is
+ * scaled to the largest value; the value label shows the real number. */
+export function BarChart({
+  eyebrow,
+  title,
+  bars,
+  unit = '%',
+}: {
+  eyebrow?: string
+  title?: ReactNode
+  bars: { label: string; desc?: string; value: number }[]
+  unit?: string
+}) {
+  const max = Math.max(...bars.map((b) => b.value), 1)
+  return (
+    <Slide>
+      {eyebrow && <div className="eyebrow">{eyebrow}</div>}
+      {title && <h1>{title}</h1>}
+      <div className="barchart">
+        {bars.map((b, i) => (
+          <div key={b.label} className="bar-row">
+            <div className="bar-label">
+              <span className="bar-label-t">{b.label}</span>
+              {b.desc && <span className="bar-label-d">{b.desc}</span>}
+            </div>
+            <div className="bar-track">
+              <div className="bar-fill" style={{ '--w': `${(b.value / max) * 100}%`, '--i': i } as CSSProperties} />
+            </div>
+            <div className="bar-value">
+              {b.value}
+              {unit}
+            </div>
+          </div>
+        ))}
+      </div>
+    </Slide>
+  )
+}
+
+/* a protest-style placard. With a `leaderboard`, the slide first shows the
+ * leaderboard (the thing being protested) and the placard rises up to cover it
+ * on a click. Without one, it is just the centered placard. */
+export function Banner({
+  eyebrow,
+  title,
+  leaderboard,
+  text,
+  sub,
+  stepped = false,
+}: {
+  eyebrow?: string
+  title?: ReactNode
+  leaderboard?: { rank: number; name: string; value: string }[]
+  text: ReactNode
+  sub?: ReactNode
+  stepped?: boolean
+}) {
+  const step = useStep()
+  if (leaderboard) {
+    const covered = !stepped || step >= 1
+    return (
+      <Slide>
+        {eyebrow && <div className="eyebrow">{eyebrow}</div>}
+        {title && <h1>{title}</h1>}
+        <div className="leaderboard">
+          {leaderboard.map((r) => (
+            <div key={r.rank} className={`lb-row${r.rank === 1 ? ' lb-top' : ''}`}>
+              <span className="lb-rank">{r.rank}</span>
+              <span className="lb-name">{r.name}</span>
+              <span className="lb-value">{r.value}</span>
+            </div>
+          ))}
+        </div>
+        <div className={`banner-cover${covered ? ' banner-cover-in' : ''}`}>
+          <div className="banner-sign">
+            <span className="banner-text">{text}</span>
+          </div>
+        </div>
+      </Slide>
+    )
+  }
+  return (
+    <div className="slide slide-center banner">
+      {eyebrow && <div className="eyebrow">{eyebrow}</div>}
+      <div className="banner-sign">
+        <span className="banner-text">{text}</span>
+      </div>
+      {sub && <p className="banner-sub">{sub}</p>}
+    </div>
   )
 }
 
@@ -890,15 +1255,26 @@ export function Builders({
   people,
   note,
   points,
+  corner,
 }: {
   eyebrow?: string
   title: ReactNode
   people: { slug: string; name: string; role: string }[]
   note?: ReactNode
   points?: string[]
+  corner?: { badge: string; qrSrc: string; url: string }
 }) {
   return (
     <Slide>
+      {corner && (
+        <div className="builders-corner">
+          <span className="builders-corner-badge">{corner.badge}</span>
+          <img className="builders-corner-qr" src={corner.qrSrc} alt="QR code to the talk video" />
+          <a className="builders-corner-url" href={`https://${corner.url}`}>
+            {corner.url}
+          </a>
+        </div>
+      )}
       {eyebrow && <div className="eyebrow">{eyebrow}</div>}
       <h1>{title}</h1>
       <div className="builders">
@@ -1003,7 +1379,7 @@ export function Phase({
   name: string
   title: ReactNode
   tone: 'teal' | 'purple' | 'amber' | 'green'
-  build: string
+  build?: string
   aspects: Aspect[]
   stepped?: boolean
 }) {
@@ -1022,10 +1398,6 @@ export function Phase({
           </div>
         ))}
       </div>
-      <p className="phase-build">
-        <span className="phase-build-label">you build this in</span>
-        {build}
-      </p>
     </Slide>
   )
 }

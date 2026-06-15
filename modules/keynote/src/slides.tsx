@@ -1,18 +1,17 @@
 import {
   Accent,
   Agenda,
+  BarChart,
   BigLoop,
-  BigStats,
+  Boxes,
   Builders,
-  CardGrid,
   Cover,
   Hosts,
-  Ladder,
-  Layers,
+  HouseRules,
   NumberedList,
-  Outputs,
   Pace,
   Phase,
+  Pipeline,
   Pivot,
   QuestionMap,
   Quote,
@@ -21,6 +20,7 @@ import {
   Statement,
   type SlideDef,
 } from './kit'
+import agenticConfQR from './assets/agentic-conf-qr.png'
 
 /*
  * Opening keynote, Day 1, 09:30. Tereza presents.
@@ -42,7 +42,7 @@ export const slides: SlideDef[] = [
       </>
     }
     subtitle="How teams deliver software with AI, and the foundations that carry it"
-    presenters="Tereza Iofciu / Hamburg, June 16-17, 2026"
+    presenters="Tereza Iofciu & Stefan Munz / Hamburg, June 16-17, 2026"
   />,
 
   /* 2 — the pace. Title is the question the talk answers; the chart shows the
@@ -112,14 +112,16 @@ export const slides: SlideDef[] = [
         eyebrow="When the model keeps changing"
         lead={
           <>
-            Newer is not better. It is <Accent>different</Accent>.
+            Newer is not only better. It is <Accent>different</Accent>.
           </>
         }
+        problemLabel="The catch"
         body="The same job, done another way. Swap a model into your pipeline and the side effects are yours to find. Keeping up is a job of its own, and hard-wiring your work to one model leaves it stale within a quarter."
+        solutionLabel="The answer"
         solution={
           <>
-            So you build a <Accent>system around the models</Accent>: robust to the churn, able to prove a swap still
-            delivers, built to gain from every release.
+            Build a <Accent>system around the models</Accent>: robust to the churn, able to prove a swap still delivers,
+            built to gain from every release.
           </>
         }
       />
@@ -132,42 +134,57 @@ export const slides: SlideDef[] = [
   {
     node: (
       <StageCards
-        eyebrow="The online promise"
-        title="Online, it looks easy."
+        eyebrow="The promise"
+        title="On social media, it looks easy."
         stepped
         stages={[
           { num: 'Stage 01', title: 'You write the code.' },
           { num: 'Stage 02', title: 'You write code with AI.', badge: '+30% productivity', tone: 'teal' },
-          { num: 'Stage 03', title: 'AI writes code with you.', badge: '10x productivity', tone: 'amber' },
+          {
+            num: 'Stage 03',
+            title: 'AI writes code with you.',
+            badge: '10x productivity',
+            tone: 'amber',
+            callout: 'The last step is a different way of working, not a faster autocomplete.',
+          },
         ]}
-        footer="In practice it is easier said than done. Most teams buy the license, capture the +30%, and stall there. The last step is a different way of working, not a faster autocomplete."
+        footer="In practice it is easier said than done. Most teams buy the license, capture the +30%, and stall there."
       />
     ),
     steps: 3,
   },
 
-  /* 5 — why we stall: stuck as the human in the loop (mindset, not tooling).
-   * Footer conclusion dropped for now per feedback round 2. */
+  /* 5 — the question the reasons answer; pairs with the boxes on the next slide. */
+  <Statement eyebrow="Why we don't cross the gap">
+    Why are we stuck in the <Accent>human-in-the-loop</Accent> space?
+  </Statement>,
+
+  /* 6 — the honest reasons, as boxes (3 on top, then 2; the last is accented).
+   * Was a numbered list; the numbers are dropped per feedback. */
   {
     node: (
-      <NumberedList
-        eyebrow="Stuck as the human in the loop"
+      <Boxes
+        eyebrow="The honest reasons"
         title="Mindset, not tooling."
+        cols={3}
         stepped
-        items={[
-          { text: 'We do not want to substitute ourselves.' },
-          { text: 'We do not trust the output.' },
+        boxes={[
+          { title: 'We do not want to substitute ourselves.' },
+          { title: 'We do not trust the output.' },
           {
-            text: 'We like writing code. We never liked reviewing it.',
-            hint: 'This new job is mostly review and validation, and the human in the loop gets tired.',
+            title: 'We like writing code.',
+            text: 'We never liked reviewing it. The new job is mostly review and validation, and the human in the loop gets tired.',
           },
           {
-            text: 'Some days it feels like being a click monkey.',
-            hint: 'Prompt, accept, prompt, accept. Nobody signed up for that.',
+            span: true,
+            title: 'Some days it feels like being a click monkey.',
+            text: 'Prompt, accept, prompt, accept. Nobody signed up for that.',
           },
           {
-            text: 'The job description moved without asking us.',
-            hint: 'Software engineer now reads like manager of agents. That is a real shift, not a tooling update.',
+            span: true,
+            tone: 'amber',
+            title: 'The job description moved without asking us.',
+            text: 'Software engineer now reads like manager of agents. A real shift, not a tooling update.',
           },
         ]}
       />
@@ -175,7 +192,7 @@ export const slides: SlideDef[] = [
     steps: 4,
   },
 
-  /* 6 — vibe coding */
+  /* 7 — vibe coding */
   {
     node: (
       <BigLoop
@@ -184,7 +201,6 @@ export const slides: SlideDef[] = [
         speed="fast"
         stepped
         stops={[{ label: 'Prompt' }, { label: 'Generate' }, { label: 'Review' }]}
-        badge="3-5 min per loop"
         prompt="$ Change the save button color to green"
         footer="Most of the easy-win noise runs on this loop. Great for demos and prototypes. It does not compound."
       />
@@ -192,64 +208,69 @@ export const slides: SlideDef[] = [
     steps: 1,
   },
 
-  /* 7 — agentic engineering */
+  /* 8 — agentic engineering as a linear pipeline; "our approach" adds the loops
+   * (the generate+verify stage iterates) on the click. Deliberate contrast to
+   * slide 6's vibe circle: a line that advances, not a circle that spins. */
   {
     node: (
-      <BigLoop
-        eyebrow="The loop that compounds"
+      <Pipeline
+        eyebrow="The pipeline that compounds"
         title="Agentic engineering"
-        speed="steady"
-        badgeTone="teal"
         stepped
-        stops={[
-          { label: 'Plan', dur: '20 min' },
-          { label: 'Generate + automated verification', dur: '20 min' },
-          { label: 'Final check', dur: '10 min' },
+        stages={[
+          { num: '01', label: 'Plan', dur: '20 min' },
+          { num: '02', label: 'Generate + automated verification', dur: '20 min', highlight: true, loop: true },
+          { num: '03', label: 'Final check', dur: '10 min' },
         ]}
-        badge="50 min per feature"
         prompt="$ Let's plan the user registration flow"
-        footer="Slower per loop, faster per delivered feature. This is the first piece of a system."
+        footer="Our approach: take the linear pipeline and add the loops. Generation and automated verification iterate until it is right, so each feature compounds instead of spinning. Slower per loop, faster per delivered feature."
       />
     ),
     steps: 1,
   },
 
-  /* 8 — the bottleneck moved */
-  <Statement eyebrow="The bottleneck moved" sub="Implementation stopped being the hardest part. The hard part moved.">
+  /* 9 — the bottleneck moved */
+  <Statement
+    eyebrow="The bottleneck moved"
+    sub="But coding has never been just about generating code. The hard part just moved."
+  >
     Code creation is <Accent>free</Accent>.
   </Statement>,
 
-  /* 9 — speed stops hiding problems */
+  /* 10 — speed stops hiding problems (boxes, was CardGrid) */
   {
     node: (
-      <CardGrid
+      <Boxes
         eyebrow="What speed makes visible"
         title="It doesn't create these problems. It just stops hiding them."
+        cols={2}
         stepped
-        cards={[
-          { title: 'Product decisions', desc: 'What should we build, exactly? Vague answers used to hide behind slow delivery.' },
-          { title: 'Validation', desc: 'Is it right, is it good, who checks? Generated code ships at the speed of your checks.' },
-          { title: 'Ownership', desc: 'Who is accountable for what ships when nobody typed it?' },
-          { title: 'Shared context', desc: 'What does the team actually know together, and where does an agent read it?' },
+        boxes={[
+          { title: 'Product decisions', text: 'What should we build, exactly? Vague answers used to hide behind slow delivery.' },
+          { title: 'Validation', text: 'Is it right, is it good, who checks? Generated code ships at the speed of your checks.' },
+          { title: 'Ownership', text: 'Who is accountable for what ships when nobody typed it?' },
+          { title: 'Shared context', text: 'What does the team actually know together, and where does an agent read it?' },
         ]}
       />
     ),
     steps: 3,
   },
 
-  /* 10 — the real shift */
+  /* 11 — the real shift (boxes, was a numbered list) */
   {
     node: (
-      <NumberedList
+      <Boxes
         eyebrow="Not who does whose job"
         title="Collaboration and responsibility, at speed."
+        cols={3}
         stepped
-        items={[
-          { text: 'The factory emerges from how your team works, and wants to work.' },
-          { text: 'Quality and pace become team properties, not personal setups.' },
+        boxes={[
+          { title: 'The factory emerges from how your team works, and wants to work.' },
+          { title: 'Quality and pace become team properties, not personal setups.' },
           {
-            text: 'And it will not stay in engineering.',
-            hint: 'Shadow IT is back: non-engineers vibe code prototypes and expect them in production. Your factory decides whether that is intake or conflict.',
+            tone: 'amber',
+            title: 'And it will not stay in engineering.',
+            text: 'Shadow IT is back: non-engineers vibe code prototypes and expect them in production. Your factory decides whether that is intake or conflict.',
           },
         ]}
       />
@@ -257,7 +278,7 @@ export const slides: SlideDef[] = [
     steps: 2,
   },
 
-  /* 11 — starting is simple, the team factory isn't */
+  /* 12 — starting is simple, the team factory isn't */
   {
     node: (
       <SplitPanels
@@ -267,11 +288,11 @@ export const slides: SlideDef[] = [
           {
             tone: 'green',
             kicker: 'The easy part',
-            heading: 'A workshop and a click.',
+            heading: 'Your own productivity.',
             items: [
-              { t: 'Workshop', d: 'With a trainer who has done it.' },
-              { t: 'The aha moment', d: '"Wait, it actually wrote that?"' },
-              { t: 'Hooked', d: 'AI coding is addictive.' },
+              { t: 'You learn', d: 'A workshop, a trainer who has done it, the aha moment.' },
+              { t: 'You try things out', d: 'Experiment freely, instant feedback, real dopamine.' },
+              { t: 'You do more with AI', d: 'Your individual output climbs. It is addictive.' },
             ],
           },
           {
@@ -291,70 +312,71 @@ export const slides: SlideDef[] = [
     steps: 1,
   },
 
-  /* 12 — maturity ladder + industry numbers.
-   * Sources: DORA State of AI-assisted Software Development 2025 (n≈5,000);
-   * Stack Overflow Developer Survey 2025. Re-verify before the event. */
-  {
-    node: (
-      <Ladder
-        eyebrow="The maturity ladder"
-        title="Where is your team, honestly?"
-        rungs={[
-          { n: 'L0', title: 'Not started', desc: 'Tab completion and a chat on the side. The way of working unchanged.' },
-          { n: 'L1', title: 'First devs all-in', desc: 'A few people work agent-first, spec-driven. Personal setups, not team practice.' },
-          { n: 'L2', title: 'The team rebuilt', desc: 'Day-to-day work redesigned around agents. No longer an early-adopter thing.' },
-          { n: 'L3', title: 'Most of engineering', desc: 'Engineers, PMs, testers, designers. Almost nobody types code anymore.' },
-          { n: 'L4', title: 'Beyond engineering', desc: 'Marketing, sales, HR and finance build with agents too.' },
-        ]}
-        stats="Industry, mid-2026: 90% of developers use AI, about two hours a day (DORA 2025). Half of professionals use it daily, while 46% distrust the output (Stack Overflow 2025). Above L1, the public numbers run out."
-        punchline="Maturity asks where you are. Your org is asking where delivery will be in six months. Same ladder, different question: hold it for the kickoff."
-      />
-    ),
-    steps: 2,
-  },
+  /* 13 — maturity distribution as a bar chart (CTO bootcamp pre-survey, N=28,
+   * counts 3/15/7/3/0 shown as %). Levels and the stats/punchline text dropped. */
+  <BarChart
+    eyebrow="CTO bootcamp, April 2026 · N=28"
+    title="Where is your team on the maturity ladder?"
+    bars={[
+      { label: 'Not started', desc: 'Tab-completion or in-context editing only. The way of working has not changed.', value: 11 },
+      { label: 'First teams all-in', desc: 'A few teams went all-in on agentic engineering, e.g. spec-driven development.', value: 54 },
+      { label: 'Multiple teams rebuilt', desc: 'Day-to-day work is being rebuilt around agents. No longer an early-adopter thing.', value: 25 },
+      { label: 'Most of IT uses it', desc: 'Engineers, PMs, testers, designers, devops. Almost nobody types code anymore.', value: 11 },
+      { label: 'Beyond IT', desc: 'Marketing, sales, HR, finance build with agents too.', value: 0 },
+    ]}
+  />,
 
-  /* 13 — the token economy */
+  /* 14 — NVIDIA's "buy more, save more"; the dealer punchline, then the
+   * "#tokens is not the KPI" placard rises to cover the quote. */
   {
     node: (
       <Quote
         eyebrow="The token economy"
         quote={'"The more you buy, the more you save."'}
         attribution="Jensen Huang, CEO of NVIDIA"
-        punchline="Don't take advice from your drug dealer."
+        punchline="Don't take advice from your dealer."
+        cover={
+          <>
+            <Accent>#tokens</Accent> is not the KPI
+          </>
+        }
         stepped
       />
     ),
-    steps: 1,
+    steps: 2,
   },
 
-  /* 14 — why build a system */
+  /* 15 — we want AI that helps (boxes, was a numbered list) */
   {
     node: (
-      <NumberedList
+      <Boxes
         eyebrow="Better, not just faster"
-        title="AI that helps, instead of overhead."
+        title="We want AI that helps."
+        cols={2}
         stepped
-        items={[
-          { text: 'Fewer tokens that do more.', hint: 'Context discipline is cost discipline. Focused context beats bigger bills.' },
+        boxes={[
+          { title: 'Fewer tokens that do more.', text: 'Context discipline is cost discipline. Focused context beats bigger bills.' },
+          { title: 'Quality designed in, not inspected in.', text: 'Verification belongs to the system, not to a tired reviewer at 6 pm.' },
           {
-            text: 'Quality designed in, not inspected in.',
-            hint: 'Verification belongs to the system, not to a tired reviewer at 6 pm.',
+            title: 'Correct the process, not the output.',
+            text: 'Hand-fixing a bad diff teaches the system nothing. Fixing the rule, the skill or the check removes the whole class of mistake.',
           },
-          {
-            text: 'Correct the process, not the output.',
-            hint: 'Hand-fixing a bad diff teaches the system nothing. Fixing the rule, the skill or the check removes the whole class of mistake.',
-          },
-          { text: 'The factory is a product your team owns.', hint: 'It improves with every delivery, and it is yours on Monday.' },
+          { title: 'The factory is a product your team owns.', text: 'It improves with every delivery, and it is yours on Monday.' },
         ]}
       />
     ),
     steps: 3,
   },
 
-  /* 15 — someone already built one (Björn + Bene reference factory) */
+  /* 16 — someone already built one; Agentic Conf badge + QR to the talk video */
   <Builders
     eyebrow="A real one already exists"
     title="Someone already built one."
+    corner={{
+      badge: 'Shown this year at Agentic Conf',
+      qrSrc: agenticConfQR,
+      url: 'youtu.be/b8ds_VX8kYY',
+    }}
     people={[
       { slug: 'bjoern', name: 'Björn Rochel', role: 'Coach for agentic engineering. Ex-engineering lead, XING / New Work.' },
       { slug: 'benedikt', name: 'Benedikt Stemmildt', role: 'Founder, hackers & wizards. Ex-CIO BLUME2000, ex-Breuninger.' },
@@ -368,7 +390,7 @@ export const slides: SlideDef[] = [
     points={['3 months in', 'runs in production', 'changes weekly', 'a reference, not the answer']}
   />,
 
-  /* 16 — factory phase 1: mindset */
+  /* 17 — factory phase 1: mindset */
   {
     node: (
       <Phase
@@ -388,7 +410,7 @@ export const slides: SlideDef[] = [
     steps: 2,
   },
 
-  /* 17 — factory phase 2: environment */
+  /* 18 — factory phase 2: environment */
   {
     node: (
       <Phase
@@ -409,7 +431,7 @@ export const slides: SlideDef[] = [
     steps: 3,
   },
 
-  /* 18 — factory phase 3: process */
+  /* 19 — factory phase 3: process */
   {
     node: (
       <Phase
@@ -426,14 +448,14 @@ export const slides: SlideDef[] = [
           { q: 'Who checks the plan first?', line: 'Verify before executing. Converge until nothing critical is left.' },
           { q: 'What gives fast signal?', line: 'Tests, types, a real browser, inside the loop.' },
           { q: 'What stops being a guess?', line: "Encode, don't instruct. Hooks block what rules miss." },
-          { q: 'How much verifies before a human?', line: "Independent reviews plus evidence, not 'looks good'." },
+          { q: 'What is still verified by a human?', line: "The judgment calls, with evidence and an independent review, not 'looks good'." },
         ]}
       />
     ),
     steps: 6,
   },
 
-  /* 19 — factory phase 4: continuous improvement */
+  /* 20 — factory phase 4: continuous improvement */
   {
     node: (
       <Phase
@@ -446,18 +468,17 @@ export const slides: SlideDef[] = [
         stepped
         aspects={[
           { q: 'Does every bug improve it?', line: 'Turn each fix into a rule, a check, or a skill.' },
-          { q: 'Still good after a model swap?', line: 'Treat the pipeline like a dependency: measure, then compare.' },
+          { q: 'What is the right model for the task?', line: 'Match the model to the step, and re-check after every release. Measure a swap, then compare.' },
         ]}
       />
     ),
     steps: 2,
   },
 
-  /* 20 — the whole factory overview (the payoff after the four phases) */
+  /* 21 — the whole factory overview (the payoff after the four phases) */
   <QuestionMap
     eyebrow="The whole factory"
-    title="Thirteen parts. One system."
-    lead="You just saw them one phase at a time. Together, this is what Björn and Bene run."
+    title="Putting it all together"
     phases={[
       { label: 'Mindset', tone: 'teal', items: ['Long-term thinking', "Know AI's limits"] },
       {
@@ -482,7 +503,7 @@ export const slides: SlideDef[] = [
     footer="Not a prompt. A product, with this many moving parts to keep answering."
   />,
 
-  /* 21 — same questions, different answers (reworked from "no blueprint") */
+  /* 22 — same questions, different answers (reworked from "no blueprint") */
   <Statement
     eyebrow="Why there is no blueprint"
     sub="Their answers fit their use cases and this month's models. Yours will differ, and they will keep moving as you mature and as the models change. So we hand you the questions, not a copy. You build the answers, and you keep re-answering."
@@ -490,92 +511,48 @@ export const slides: SlideDef[] = [
     Same questions. <Accent>Different answers.</Accent>
   </Statement>,
 
-  /* 22 — the evaluation question (Björn's, with the "depends on the constraint" nuance) */
-  <CardGrid
-    eyebrow="Evaluating the factory"
-    title="Did this change make things better or worse?"
-    cards={[
-      { title: 'If cost is the constraint', desc: 'Better means fewer tokens for the same result. Cheaper models per step, less context bloat.' },
-      { title: 'If time is the constraint', desc: 'Better means faster per delivered feature. Less wall-clock, less waiting on the loop.' },
-      { title: 'If quality is the constraint', desc: 'Better means fewer escaped defects and a lower change-failure rate. Correctness over speed.' },
-      { title: 'If trust is the constraint', desc: 'Better means more confidence per change: reviewable evidence, not a green checkmark.' },
-    ]}
-    footer="You cannot maximize all four at once. Name the constraint you are under, then measure against it. That is tomorrow morning: data, not vibes."
-  />,
-
-  /* 23 — the bridge: Björn's phases become the bootcamp's four parts */
+  /* 23 — the four parts of the two days (boxes, was Layers; Björn framing dropped) */
   {
     node: (
-      <Layers
-        eyebrow="Björn's factory, your two days"
-        title="Four phases become four parts."
+      <Boxes
+        title="2 days to get started with the AI factory?"
+        cols={2}
         stepped
-        layers={[
-          {
-            title: 'Part 1: Lay the foundations',
-            desc: 'his mindset + environment: skills, rules, hooks, context',
-            when: 'today, morning',
-            tone: 'teal',
-          },
-          {
-            title: 'Part 2: Wire the pipeline',
-            desc: 'his process: planning, sub-agents, fast feedback, determinism',
-            when: 'today, afternoon',
-            tone: 'purple',
-          },
-          {
-            title: 'Part 3: Run it as a product',
-            desc: 'his continuous improvement: evals, observability, learning loops',
-            when: 'tomorrow, morning',
-            tone: 'amber',
-          },
-          {
-            title: 'Part 4: Take it to the organization',
-            desc: 'beyond his engineering pipeline: roles, teams, your 90-day rollout',
-            when: 'tomorrow, afternoon',
-            tone: 'green',
-          },
+        boxes={[
+          { tone: 'teal', label: 'Today, morning', title: 'Part 1: Lay the foundations', text: 'Mindset + environment: skills, rules, hooks, context.' },
+          { tone: 'purple', label: 'Today, afternoon', title: 'Part 2: Wire the pipeline', text: 'Process: planning, sub-agents, fast feedback, determinism.' },
+          { tone: 'amber', label: 'Tomorrow, morning', title: 'Part 3: Run it as a product', text: 'Continuous improvement: evals, observability, learning loops.' },
+          { tone: 'green', label: 'Tomorrow, afternoon', title: 'Part 4: Take it to the organization', text: 'Roles, teams, and your rollout.' },
         ]}
       />
     ),
     steps: 3,
   },
 
-  /* 24 — impact range */
+  /* 24 — what you take home (boxes; 3rd is the hycle/org beat, was the 90-day rollout) */
   {
     node: (
-      <BigStats
-        eyebrow="Is the climb worth it?"
-        stepped
-        stats={[
-          { value: '+30%', label: 'with a license alone', tone: 'amber' },
-          { value: '3-10x', label: 'with a factory around it', tone: 'teal' },
-        ]}
-        footer="Nobody shows you how these are measured. A single number called quality oversimplifies, and it means something different in every organization. Tomorrow morning you define what it means in yours."
-      />
-    ),
-    steps: 2,
-  },
-
-  /* 25 — what you take home */
-  {
-    node: (
-      <NumberedList
+      <Boxes
         eyebrow="What you take home"
         title="You leave with a running factory."
+        cols={3}
         stepped
-        items={[
-          { text: 'Foundations and a pipeline you built yourself, with your pod.' },
-          { text: 'A way to measure it.', hint: 'Tomorrow morning we ask: does your factory deliver? Data, not vibes.' },
-          { text: 'A 90-day rollout for your team.', hint: 'Filled in tomorrow afternoon, yours to run on Monday.' },
+        boxes={[
+          { title: 'Foundations and a pipeline.', text: 'Built yourself, with your pod.' },
+          { title: 'A way to measure it.', text: 'Tomorrow morning we ask: does your factory deliver? Data, not vibes.' },
+          {
+            tone: 'teal',
+            title: 'What changes for the org.',
+            text: 'When execution becomes instant, what happens to roles, teams, and process? That is the hycle session.',
+          },
         ]}
-        footer="You are early. Most of the curve is still ahead."
+        footer="Remember, this all started in November 2025. The goal is not a finished playbook, it is learning to adapt while the ground keeps moving."
       />
     ),
     steps: 3,
   },
 
-  /* 26 — the two days, timed */
+  /* 25 — the two days, timed */
   <Agenda
     title="The two days"
     days={[
@@ -603,7 +580,7 @@ export const slides: SlideDef[] = [
           { t: '10:00', s: 'Pod block 3, evals & optimization' },
           { t: '12:00', s: 'Cross-pod show & tell' },
           { t: '13:00', s: 'Lunch' },
-          { t: '14:00', s: 'Live walkthrough: hycle in action' },
+          { t: '14:00', s: 'Hycle in action' },
           { t: '14:30', s: 'Pod block 4, cycle' },
           { t: '16:15', s: 'Reflect & commit' },
           { t: '17:00', s: 'Closing & group photo' },
@@ -612,7 +589,7 @@ export const slides: SlideDef[] = [
     ]}
   />,
 
-  /* 27 — trainers (final list + remaining bios/photos from Tereza, see speaker-notes.md) */
+  /* 26 — trainers (final list + remaining bios/photos from Tereza, see speaker-notes.md) */
   <Hosts
     eyebrow="Your trainers"
     people={[
@@ -654,19 +631,26 @@ export const slides: SlideDef[] = [
     ]}
   />,
 
-  /* 28 — house rules */
-  <NumberedList
+  /* 27 — house rules, Chatham-House style (icon boxes + write-about-it banner) */
+  <HouseRules
     eyebrow="House rules"
-    title="What is said here, stays here."
-    items={[
-      { text: 'No video.' },
-      { text: 'No audio recording.' },
-      { text: 'Chatham House rule.', hint: 'Share the learnings, not the names.' },
+    title={
+      <>
+        <span className="accent-green">Chatham House</span> rule.
+      </>
+    }
+    rules={[
+      { icon: 'video-off', text: 'No video.' },
+      { icon: 'mic-off', text: 'No audio recording.' },
+      { icon: 'lock', text: 'What is said here, stays here.' },
     ]}
-    footer="Write about what you learned, publicly and gladly. Keep other companies' details out of it: no names, no numbers, no specifics."
+    banner={{
+      label: 'Write about it:',
+      text: "you are welcome to share publicly what the event was like, what you liked, and what you learned. Just keep other companies' details out of it, no names, no numbers, no sensitive specifics.",
+    }}
   />,
 
-  /* 29 — pod kickoff */
+  /* 28 — pod kickoff */
   <NumberedList
     chips={[
       { label: 'Pod kickoff', tone: 'teal' },
@@ -686,22 +670,4 @@ export const slides: SlideDef[] = [
     footer="Leave knowing the real problems at your table. They become your pod's working groups for the next two days."
   />,
 
-  /* 30 — kickoff output + handover */
-  <Outputs
-    title="One headline. One open question."
-    cards={[
-      {
-        label: 'One headline',
-        text: 'A sentence your whole pod agrees on. Concrete and specific, not a platitude.',
-        tone: 'teal',
-      },
-      {
-        label: 'One open question',
-        text: 'The one nobody in your pod can answer. It goes on the wall and stays with us for two days.',
-        tone: 'purple',
-      },
-    ]}
-    logistics={['Pods + rooms: posted at registration', 'Materials: links + PDFs after each session']}
-    closing="See you back here at 11:00."
-  />,
 ]
