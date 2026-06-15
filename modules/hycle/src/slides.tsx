@@ -116,8 +116,19 @@ export const slides: SlideDef[] = [
     footer="When execution was slow, you never noticed these were the real bottleneck. Now building is instant, and the slow decision is exposed."
   />,
 
-  /* 5 — the trap divider */
-  <Section kicker="The trap" title="Two futures. Both bad." />,
+  /* 5 — the trap, opened with Drucker. Punchline reveals the turn into the two futures. */
+  {
+    node: (
+      <Quote
+        eyebrow="The trap"
+        quote={<>There is nothing so useless as doing efficiently that which should not be done at all.</>}
+        attribution="Peter Drucker"
+        punchline="Two futures follow from here. Both bad."
+        stepped
+      />
+    ),
+    steps: 1,
+  },
 
   /* 6 — the two futures, second revealed on click */
   {
