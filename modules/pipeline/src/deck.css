@@ -484,6 +484,112 @@ body {
   font-size: 19px;
 }
 
+/* pod runsheet (during-exercise parking slide) */
+.runsheet-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+  margin-bottom: 26px;
+}
+
+.runsheet-head h1 {
+  margin: 0;
+}
+
+.qr-panel {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.qr-img {
+  width: 132px;
+  height: 132px;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-soft);
+}
+
+.qr-cap {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--primary);
+  margin-top: 2px;
+}
+
+.qr-url {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  max-width: 220px;
+}
+
+.runsheet-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+
+.runsheet-card {
+  box-shadow: var(--shadow-soft);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--primary);
+  border-radius: var(--radius-sm);
+  padding: 18px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.runsheet-card-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 2px;
+}
+
+.runsheet-time {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--primary-deep);
+  letter-spacing: 0.02em;
+}
+
+.runsheet-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 25px;
+}
+
+.runsheet-desc {
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.runsheet-levels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.runsheet-levels .chip {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
 /* layers */
 .layers {
   display: flex;
