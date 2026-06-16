@@ -9,6 +9,20 @@
       "name": "slidev-theme-hw-bootcamp",
       "version": "0.1.0",
     },
+    "modules/agenda": {
+      "name": "agenda",
+      "dependencies": {
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+      },
+      "devDependencies": {
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0",
+        "@vitejs/plugin-react": "^4.3.4",
+        "typescript": "~5.7.2",
+        "vite": "^6.0.0",
+      },
+    },
     "modules/foundation": {
       "name": "foundation",
       "dependencies": {
@@ -662,6 +676,8 @@
     "@vueuse/shared": ["@vueuse/shared@14.3.0", "", { "peerDependencies": { "vue": "^3.5.0" } }, "sha512-bZpge9eSXwa4ToSiqJ7j6KRwhAsneMFoSz3LMWKQDkqimm3D/tbFlrklrs/IOqC8tEcYmXQZJ6N0UrjhBirVCg=="],
 
     "acorn": ["acorn@8.16.0", "", { "bin": { "acorn": "bin/acorn" } }, "sha512-UVJyE9MttOsBQIDKw1skb9nAwQuR5wuGD3+82K6JgJlm/Y+KI92oNsMNGZCYdDsVtRHSak0pcV5Dno5+4jh9sw=="],
+
+    "agenda": ["agenda@workspace:modules/agenda"],
 
     "alien-signals": ["alien-signals@3.2.1", "", {}, "sha512-I8FjmltrfnDFoZedi5CG8DghVYNhzb/Ijluz7tCSJH0xpd0484Kowhbb1XDYOxfJpU1p5wnM2X54dA+IfGyD1g=="],
 

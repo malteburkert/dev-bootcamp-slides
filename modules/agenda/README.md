@@ -13,6 +13,6 @@ Purely facilitated sessions stay slide-free; this module only carries what genui
 
 ## Materials
 
-- Deck: start with `bun run new agenda slidev`.
+- Deck (`src/slides.tsx`, TS, theme via the shared kit): the pod-block exercise overview is built (cover plus one timeline slide per hands-on block: Day 1 AM, Day 1 PM, Day 2 AM), with per-exercise timings sourced from the `dev-bootcamp-factory-workshop` block READMEs. The `BlockPlan` component lives in `src/kit.tsx`. Framing slides for the organizational sessions above (customer reports intro, show & tell, closing) still to add to the same deck. Day 2 PM (Pod block 4 / cycle) is Nermin's and lives elsewhere.
 - `exercises/`: reflection worksheet and the 90-day rollout template (the event page promises participants take it home).
 - `guest-decks/`: final PDFs from the customer-report guests, so participants get them with the rest.
