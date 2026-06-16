@@ -514,6 +514,59 @@ export function Hosts({
   )
 }
 
+/* during-exercise parking slide: 2x2 timed runsheet + repo QR panel.
+ * Left up on screen while the pod works. ETA per card, wall-clock start time,
+ * and a scannable QR to clone the sandbox. */
+export function PodRunsheet({
+  eyebrow,
+  title,
+  qr,
+  items,
+}: {
+  eyebrow: string
+  title: ReactNode
+  qr: { src: string; caption: string; url: string }
+  items: { num: string; time: string; eta: string; title: string; desc: string; levels?: string[] }[]
+}) {
+  return (
+    <Slide>
+      <div className="runsheet-head">
+        <div>
+          <div className="eyebrow">{eyebrow}</div>
+          <h1>{title}</h1>
+        </div>
+        <div className="qr-panel">
+          <img className="qr-img" src={qr.src} alt={`QR code for ${qr.url}`} />
+          <span className="qr-cap">{qr.caption}</span>
+          <span className="qr-url">{qr.url}</span>
+        </div>
+      </div>
+      <div className="runsheet-grid">
+        {items.map((it) => (
+          <div key={it.num} className="runsheet-card">
+            <div className="runsheet-card-top">
+              <span className="stage-num">{it.num}</span>
+              <span className="runsheet-time">{it.time}</span>
+              <span className="chip chip-amber">{it.eta}</span>
+            </div>
+            <span className="runsheet-title">{it.title}</span>
+            <span className="runsheet-desc">{it.desc}</span>
+            {it.levels && (
+              <div className="runsheet-levels">
+                {it.levels.map((l) => (
+                  <span key={l} className="chip chip-plain">
+                    {l}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </Slide>
+  )
+}
+
 /* two highlighted output cards + logistics chips */
 export function Outputs({
   title,

@@ -8,11 +8,13 @@ import {
   LoopCompare,
   NumberedList,
   Outputs,
+  PodRunsheet,
   Section,
   StageCards,
   Statement,
   type SlideDef,
 } from './kit'
+import qrFactoryWorkshop from './assets/factory-workshop-qr.svg'
 
 /*
  * Intro to the Pipeline (Day 1, 14:00-14:30) + Pod block 2 briefing.
@@ -214,6 +216,47 @@ export const slides: SlideDef[] = [
     ),
     steps: 3,
   },
+
+  <PodRunsheet
+    eyebrow="Pod block 2 / 90 min / 14:30-16:00"
+    title="Your run sheet"
+    qr={{
+      src: qrFactoryWorkshop,
+      caption: 'Clone the sandbox',
+      url: 'github.com/hackersandwizards/dev-bootcamp-factory-workshop',
+    }}
+    items={[
+      {
+        num: '01',
+        time: '14:30',
+        eta: '15 min',
+        title: 'Factory contract',
+        desc: 'Inspect a Bean. See the hand-off contract before you build.',
+      },
+      {
+        num: '02',
+        time: '14:45',
+        eta: '50 min',
+        title: 'Wire your pipeline',
+        desc: 'Pick your starting point, then build the connected spine.',
+        levels: ['L1 run supplied', 'L2 replace planner', 'L3 harden refine'],
+      },
+      {
+        num: '03',
+        time: '15:35',
+        eta: '15 min',
+        title: 'Implement demo',
+        desc: 'Trainer runs the supplied /implement on a refined Bean.',
+      },
+      {
+        num: '04',
+        time: '15:50',
+        eta: '10 min',
+        title: 'Reflect, pick presenter',
+        desc: 'What a contract saved or broke. Decide who presents tomorrow.',
+      },
+    ]}
+  />,
 
   <Outputs
     title="Before you leave the pod"
