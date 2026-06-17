@@ -1,4 +1,151 @@
-import { createContext, useContext, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import mermaid from 'mermaid'
+
+/* ---- FactoryDiagram ---- */
+
+mermaid.initialize({
+  startOnLoad: false,
+  securityLevel: 'loose',
+  theme: 'base',
+  themeVariables: {
+    // Dark panel — hex values must stay in sync with the blueprint.
+    // CSS variables cannot be used here; mermaid does not resolve them.
+    darkMode: true,
+    fontFamily: 'JetBrains Mono, monospace',
+    fontSize: '13px',
+    primaryColor: '#16212f',
+    primaryTextColor: '#dbe4f0',
+    primaryBorderColor: '#5b9dd9',
+    lineColor: '#5c6b80',
+    textColor: '#c3cdda',
+    secondaryColor: '#16212f',
+    tertiaryColor: '#101722',
+    transitionLabelColor: '#c3cdda',
+  },
+})
+
+const DIAGRAM: Record<1 | 2 | 3 | 4, string> = {
+  1: `stateDiagram-v2
+  direction TB
+  [*] --> PLANNED
+  PLANNED --> SPEC_COMPILING
+  SPEC_COMPILING --> IMPLEMENTING
+  IMPLEMENTING --> REVIEW: ready
+  REVIEW --> IMPLEMENTING: changes
+  REVIEW --> DONE: approved
+  DONE --> [*]
+
+  classDef hitl fill:#3a2a08,stroke:#f59e0b,color:#fde7b3;
+  classDef good fill:#0c2e18,stroke:#22c55e,color:#bdf3cf;
+  class REVIEW hitl
+  class DONE good`,
+
+  2: `stateDiagram-v2
+  direction TB
+  [*] --> PLANNED
+  PLANNED --> SPEC_COMPILING
+  SPEC_COMPILING --> TEST_AUTHORING
+  TEST_AUTHORING --> RED_VERIFY: run new tests
+  RED_VERIFY --> TEST_AUTHORING: wrong-reason fail
+  RED_VERIFY --> IMPLEMENTING: true RED
+  IMPLEMENTING --> GREEN_VERIFY: run suite
+  GREEN_VERIFY --> IMPLEMENTING: fail
+  GREEN_VERIFY --> REFACTORING: all green
+  REFACTORING --> REVIEW
+  REVIEW --> IMPLEMENTING: changes
+  REVIEW --> DONE: approved
+  DONE --> [*]
+
+  classDef auto fill:#16212f,stroke:#5b9dd9,color:#dbe4f0;
+  classDef gate fill:#0b2733,stroke:#38bdf8,color:#bfeefc;
+  classDef hitl fill:#3a2a08,stroke:#f59e0b,color:#fde7b3;
+  classDef good fill:#0c2e18,stroke:#22c55e,color:#bdf3cf;
+  class SPEC_COMPILING,TEST_AUTHORING,IMPLEMENTING,REFACTORING auto
+  class RED_VERIFY,GREEN_VERIFY gate
+  class REVIEW hitl
+  class DONE good`,
+
+  3: `stateDiagram-v2
+  direction TB
+  [*] --> PLANNED
+  PLANNED --> SPEC_COMPILING
+  SPEC_COMPILING --> TEST_AUTHORING
+  SPEC_COMPILING --> BLOCKED_CLAR: ambiguity
+  TEST_AUTHORING --> RED_VERIFY: run new tests
+  RED_VERIFY --> TEST_AUTHORING: wrong-reason fail
+  RED_VERIFY --> IMPLEMENTING: true RED
+  IMPLEMENTING --> GREEN_VERIFY: run suite
+  GREEN_VERIFY --> IMPLEMENTING: fail
+  GREEN_VERIFY --> ESCALATED: budget=0
+  GREEN_VERIFY --> REFACTORING: all green
+  REFACTORING --> REFACTOR_VERIFY
+  REFACTOR_VERIFY --> REFACTORING: regressed
+  REFACTOR_VERIFY --> REVIEW: pass
+  REVIEW --> IMPLEMENTING: changes
+  REVIEW --> DONE: approved
+  REVIEW --> BLOCKED_CLAR: spec gap
+  BLOCKED_CLAR --> SPEC_COMPILING: answer
+  ESCALATED --> IMPLEMENTING: fix
+  DONE --> [*]
+
+  classDef auto fill:#16212f,stroke:#5b9dd9,color:#dbe4f0;
+  classDef gate fill:#0b2733,stroke:#38bdf8,color:#bfeefc;
+  classDef hitl fill:#3a2a08,stroke:#f59e0b,color:#fde7b3;
+  classDef good fill:#0c2e18,stroke:#22c55e,color:#bdf3cf;
+  class SPEC_COMPILING,TEST_AUTHORING,IMPLEMENTING,REFACTORING auto
+  class RED_VERIFY,GREEN_VERIFY,REFACTOR_VERIFY gate
+  class BLOCKED_CLAR,ESCALATED hitl
+  class DONE good`,
+
+  4: `stateDiagram-v2
+  direction TB
+  [*] --> PLANNED
+  PLANNED --> READY: deps DONE
+  READY --> SPEC_COMPILING
+  SPEC_COMPILING --> CONTRACT_READY: tsc on contract OK
+  SPEC_COMPILING --> BLOCKED_CLAR: ambiguity
+  CONTRACT_READY --> TEST_AUTHORING
+  TEST_AUTHORING --> RED_VERIFY: run new tests
+  RED_VERIFY --> TEST_AUTHORING: passes / wrong-reason fail
+  RED_VERIFY --> IMPLEMENTING: true RED
+  IMPLEMENTING --> GREEN_VERIFY: run suite · tests locked
+  GREEN_VERIFY --> IMPLEMENTING: fail · budget--
+  GREEN_VERIFY --> ESCALATED: budget = 0
+  GREEN_VERIFY --> REFACTORING: all green
+  REFACTORING --> REFACTOR_VERIFY
+  REFACTOR_VERIFY --> REFACTORING: regressed
+  REFACTOR_VERIFY --> REVIEW: green + coverage + lint + mutation
+  REVIEW --> INTEGRATING: approved
+  REVIEW --> IMPLEMENTING: changes requested
+  REVIEW --> BLOCKED_CLAR: spec gap
+  INTEGRATING --> DONE: merged · full suite green
+  INTEGRATING --> ESCALATED: integration break
+  BLOCKED_CLAR --> SPEC_COMPILING: answer
+  ESCALATED --> IMPLEMENTING: human fix / guidance
+  ESCALATED --> FAILED: abandoned
+  DONE --> [*]
+
+  classDef auto fill:#16212f,stroke:#5b9dd9,color:#dbe4f0;
+  classDef gate fill:#0b2733,stroke:#38bdf8,color:#bfeefc;
+  classDef hitl fill:#3a2a08,stroke:#f59e0b,color:#fde7b3;
+  classDef good fill:#0c2e18,stroke:#22c55e,color:#bdf3cf;
+  classDef bad  fill:#3a1414,stroke:#ef4444,color:#f9c8c8;
+  class SPEC_COMPILING,TEST_AUTHORING,IMPLEMENTING,REFACTORING,INTEGRATING auto
+  class RED_VERIFY,GREEN_VERIFY,REFACTOR_VERIFY gate
+  class BLOCKED_CLAR,ESCALATED hitl
+  class DONE good
+  class FAILED bad`,
+}
+
+let _diagramCounter = 0
+
+const _svgCache = new Map<number, string>()
+const _cacheReady = Promise.all(
+  ([1, 2, 3, 4] as const).map(async (phase) => {
+    const { svg } = await mermaid.render(`fd-init-p${phase}`, DIAGRAM[phase])
+    _svgCache.set(phase, svg)
+  }),
+)
 
 /*
  * Slide kit. Every component renders inside the responsive frame (designed at 1280x720).
@@ -514,6 +661,47 @@ export function Hosts({
   )
 }
 
+export function FactoryDiagram({ phase }: { phase: 1 | 2 | 3 | 4 }) {
+  const [svg, setSvg] = useState(() => _svgCache.get(phase) ?? '')
+
+  useEffect(() => {
+    if (_svgCache.has(phase)) {
+      setSvg(_svgCache.get(phase)!)
+      return
+    }
+    _cacheReady.then(() => setSvg(_svgCache.get(phase) ?? ''))
+  }, [phase])
+
+  return (
+    <div className="factory-diagram-wrap">
+      <div className="factory-diagram" dangerouslySetInnerHTML={{ __html: svg }} />
+    </div>
+  )
+}
+
+export function FactorySlide({
+  eyebrow,
+  title,
+  phase,
+  children,
+}: {
+  eyebrow: string
+  title: ReactNode
+  phase: 1 | 2 | 3 | 4
+  children: ReactNode
+}) {
+  return (
+    <Slide>
+      <div className="eyebrow">{eyebrow}</div>
+      <h1>{title}</h1>
+      <div className="factory-cols">
+        <div>{children}</div>
+        <FactoryDiagram phase={phase} />
+      </div>
+    </Slide>
+  )
+}
+
 /* two highlighted output cards + logistics chips */
 export function Outputs({
   title,
@@ -548,52 +736,3 @@ export function Outputs({
     </Slide>
   )
 }
-
-/* per-block exercise plan: eyebrow + title + optional subtitle, then a timed
- * agenda in one or two columns, with an optional footer note. Each row is a
- * start time/label on the mono rail, a session, an optional duration on the
- * right, and an optional chip. */
-export type PlanRow = { t: string; s: ReactNode; dur?: string; chip?: string; tone?: 'teal' | 'amber' | 'plain' }
-export type PlanColumn = { kicker: string; heading?: string; rows: PlanRow[] }
-
-export function BlockPlan({
-  eyebrow,
-  title,
-  subtitle,
-  columns,
-  footer,
-}: {
-  eyebrow: string
-  title: ReactNode
-  subtitle?: ReactNode
-  columns: PlanColumn[]
-  footer?: ReactNode
-}) {
-  return (
-    <Slide>
-      <div className="eyebrow">{eyebrow}</div>
-      <h1 className="blockplan-h">{title}</h1>
-      {subtitle && <p className="subtitle blockplan-sub">{subtitle}</p>}
-      <div className="agenda blockplan">
-        {columns.map((c) => (
-          <div key={c.kicker} className="agenda-day">
-            <div className="eyebrow eyebrow-purple">{c.kicker}</div>
-            {c.heading && <h2>{c.heading}</h2>}
-            <div className="agenda-rows">
-              {c.rows.map((r, i) => (
-                <div key={i} className="agenda-row">
-                  <span className="agenda-t blockplan-t">{r.t}</span>
-                  <span className="agenda-s">{r.s}</span>
-                  {r.dur && <span className="blockplan-dur">{r.dur}</span>}
-                  {r.chip && <span className={`chip chip-${r.tone ?? 'plain'}`}>{r.chip}</span>}
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-      {footer && <p className="blockplan-foot">{footer}</p>}
-    </Slide>
-  )
-}
-
